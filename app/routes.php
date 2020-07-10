@@ -15,6 +15,14 @@ $containerBuilder->addDefinitions([
     Engine::class => function() {
         return new Engine("../app/views");
     },
+
+    /**
+     * @note Флэш-уведомления
+     * @see https://packagist.org/packages/tamtamchik/simple-flash - полная документация
+     */
+    Flash::class => function() {
+        return new Flash();
+    },
 ]);
 
 $container = $containerBuilder->build();
@@ -22,6 +30,9 @@ $container = $containerBuilder->build();
 // Все роуты приложения
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/', ["App\controllers\HomeController", "index"]);
+    $r->addRoute('GET', '/dashboard', ["App\controllers\HomeController", "dashboard"]);
+    $r->addRoute('POST', '/login/check', ["App\controllers\HomeController", "login"]);
+    $r->addRoute('GET', '/logout', ["App\controllers\HomeController", "logout"]);
 });
 
 
@@ -49,3 +60,4 @@ switch ($routeInfo[0])
         $container->call($handler, $vars);
         break;
 }
+

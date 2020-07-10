@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6149a7c29a9ebf4f9f8bd4491fd564b1",
+    "content-hash": "8727c45ddbb39466fa2794082d884533",
     "packages": [
         {
             "name": "camunda/camunda-bpm-php-sdk",
@@ -967,6 +967,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-curl": "*"
+    },
     "platform-dev": []
 }
