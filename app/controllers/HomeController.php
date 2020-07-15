@@ -2,15 +2,15 @@
 
 namespace App\controllers;
 
+use App\components\CURL;
 use League\Plates\Engine;
-use org\camunda\php\sdk\Api;
-use org\camunda\php\sdk\entity\request\ProcessDefinitionRequest;
 use Tamtamchik\SimpleFlash\Flash;
 
 class HomeController
 {
     private $view;
     private $flash;
+    private $curl;
 
 
     /**
@@ -18,10 +18,11 @@ class HomeController
      * @param Engine $view
      * @param Flash $flash
      */
-    public function __construct(Engine $view, Flash $flash)
+    public function __construct(Engine $view, Flash $flash, CURL $curl)
     {
         $this->view = $view;
         $this->flash = $flash;
+        $this->curl = $curl;
     }
 
     /**
@@ -38,42 +39,19 @@ class HomeController
         }
     }
 
-
-    /**
-     * Страница со списком задеплоенных в Camunda процессов
-     * @throws \Exception
-     */
-    public function dashboard()
-    {
-        if ($this->check()) {
-
-            $camundaAPI = new Api('http://localhost:8080/engine-rest');
-            $processDefinitionRequest = new ProcessDefinitionRequest();
-            $processDefinitions = $camundaAPI->processDefinition->getDefinitions($processDefinitionRequest);
-
-            echo $this->view->render("dashboard", [
-                'processDefinitions' => $processDefinitions,
-            ]);
-        } else {
-            header("Location: /");
-        }
-    }
-
     /*
      *
      */
     public function login()
     {
-        // тут должна быть отправка запроса на REST API Camunda.
-        // так как я не смог решить проблему CORS и 403 ошибки, то решил сделать fake проверку.
-        // CURL
+        // Данные в формате x-www-form-urlencoded
+        $data = 'username=' . $_POST['username'] . '&password=' . $_POST['password'];
 
-        // Fake проверка
-        if ($_POST['username'] == 'demo' && $_POST['password'] == 'demo') {
-            $_SESSION['user'] = [
-                'id' => '1',
-                'username' => $_POST['username']
-            ];
+        $response = $this->curl->post('http://localhost:8080/camunda/api/admin/auth/user/default/login/welcome', $data);
+
+        // Введенные данные верны
+        if ($response) {
+            $_SESSION['user'] = $response;
             header("Location: /dashboard");
         } else {
             $this->flash->error("Неверно введён логин или пароль!");

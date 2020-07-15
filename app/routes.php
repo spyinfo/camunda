@@ -30,7 +30,7 @@ $container = $containerBuilder->build();
 // Все роуты приложения
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/', ["App\controllers\HomeController", "index"]);
-    $r->addRoute('GET', '/dashboard', ["App\controllers\HomeController", "dashboard"]);
+    $r->addRoute('GET', '/dashboard', ["App\controllers\DashboardController", "dashboard"]);
     $r->addRoute('POST', '/login/check', ["App\controllers\HomeController", "login"]);
     $r->addRoute('GET', '/logout', ["App\controllers\HomeController", "logout"]);
 });
